@@ -1,0 +1,118 @@
+
+             Create connection and save data
+
+
+              public void Connect()  {
+    
+    
+          
+          
+          try {
+          Class.forName("com.mysql.jdbc.Driver"); 
+          con = DriverManager.getConnection("jdbc:mysql://localhost/studentdb","root","");   
+          
+          
+        
+          } catch (ClassNotFoundException ex) {
+              
+              Logger.getLogger(NewJFrame.class.getName()).log(Level.SEVERE, null ,ex);
+             
+              
+        } catch (SQLException ex) {
+              
+              Logger.getLogger(NewJFrame.class.getName()).log(Level.SEVERE, null ,ex);
+              
+        
+          }
+          
+    }
+
+
+  Now double click on the add button and type code
+
+
+   try {
+            
+        String StudentId = txtId.getText();
+        String StudentName = txtName.getText();
+        String Roll = txtRoll.getText();
+        String Status = txtStatus.getText();
+        
+        
+        PreparedStatement pst = con.prepareStatement("INSERT INTO mytab (studentid,studentname,roll,status)VALUES(?,?,?,?)"); 
+            
+            pst.setString(1,StudentId);
+            pst.setString(2, StudentName);
+            pst.setString(3,Roll);
+            pst.setString(4,Status);
+            
+            
+            
+            int a = pst.executeUpdate();
+            
+            
+            if (a==1){
+            
+             JOptionPane.showMessageDialog("Record Added Successfully");
+              
+             
+        
+            
+            
+        }else{
+                
+                 JOptionPane.showMessageDialog(Error,"Please Try Again");
+
+                 ShowTableData();
+                
+                }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(NewJFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+}
+
+
+
+
+  
+
+        private void ShowTableData(){
+    
+    
+        try {
+            int q;
+            
+            PreparedStatement pst = con.prepareStatement("select * from mytab"); 
+            rs = pst.executeQuery();
+            
+            ResultSetMetaData rss = rs.getMetaData();
+            
+            q = rss.getColumnCount();
+            
+            DefaultTableModel df =(DefaultTableModel)table1.getModel(); 
+            
+            df.setRowCount(0);
+             
+            while(rs.next()){
+        
+            Vector v2 = new Vector();
+             
+            for(int a=1; a<q; a++){
+                 
+                v2.add(rs.getString("StudentId"));
+                v2.add(rs.getString("StudentName"));
+                v2.add(rs.getString("Roll"));
+                v2.add(rs.getString("Status"));
+             }
+             
+             df.addRow(v2);
+        
+        }
+            
+    
+        
+        } catch (SQLException ex) {
+            Logger.getLogger(NewJFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
